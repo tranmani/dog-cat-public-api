@@ -100,7 +100,7 @@ export default class Home extends Vue {
   /**
    * getDogs Get 10 dog Pics based on dog breed id from API
    */
-  public async getDogPics(next: boolean): Promise<void> {
+  public getDogPics(next: boolean): void {
     if (next) this.$store.commit("nextPage");
     else this.$store.commit("previousPage");
 
@@ -112,23 +112,23 @@ export default class Home extends Vue {
     // if (this.isGetDog) {
     for (let i = 0; i < 10; i++) {
       const index = this.$store.getters.currentPage + i;
-      const dogInfo = await Dog.getDog(this.$store.getters.dogs[index].id);
+      Dog.getDog(this.$store.getters.dogs[index].id).then((res) => {
+        this.id++;
 
-      this.id++;
+        const dogPic = res.data[0].url;
+        const dog = res.data[0].breeds[0];
 
-      const dogPic = dogInfo.data[0].url;
-      const dog = dogInfo.data[0].breeds[0];
+        // Put each dog information to vuex store
+        this.$store.commit("addDogPic", {
+          id: dog.id,
+          dogPic: dogPic,
+        });
 
-      // Put each dog information to vuex store
-      this.$store.commit("addDogPic", {
-        id: dog.id,
-        dogPic: dogPic,
+        if (this.id == 10) {
+          this.$store.commit("copyDisplayDogs");
+          this.loaded = true;
+        }
       });
-
-      if (this.id == 10) {
-        this.$store.commit("copyDisplayDogs");
-        this.loaded = true;
-      }
     }
     // }
   }

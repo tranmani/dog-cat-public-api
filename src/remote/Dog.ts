@@ -5,8 +5,8 @@ const imageEnpoint = 'images/search?breed_id='
 const breedsEnpoint = 'breeds'
 
 export default {
-    async getDog(id: number) {
-        return await AxiosClient({
+    getDog(id: number) {
+        return AxiosClient({
             method: 'get',
             url: `${baseUrl}${imageEnpoint}${id}`
         });

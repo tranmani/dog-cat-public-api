@@ -1,25 +1,4 @@
 <template>
-  <!-- <v-card hover class="card rounded-lg">
-    <v-img
-      :aspect-ratio="1 / 1"
-      class="white--text align-end"
-      height="250px"
-      :src="dogPic"
-      lazy-src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-    >
-      <v-card-title class="card-title justify-center">
-        {{ truncate(name, 20, "...") }}
-      </v-card-title>
-    </v-img>
-    <v-row class="d-flex justify-center pa-1">
-      <Chip
-        v-for="char in characteristics"
-        :key="char"
-        :name="char"
-        class="chip"
-      />
-    </v-row>
-  </v-card> -->
   <div class="card">
     <div class="img d-flex center">
       <img :src="dogPic" class="img-content" />
