@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <div class="img d-flex center">
+    <div class="img d-flex center" @click="seeDetail">
       <img :src="dogPic" class="img-content" />
       <div class="card-title">
         <div class="title">{{ truncate(name, 20, "...") }}</div>
@@ -53,6 +53,24 @@ export default class DogCard extends Vue {
       return text;
     }
   }
+
+  /**
+   * seeDetail Go to detail page of the clicked dog
+   */
+  public seeDetail() {
+    this.$store.commit("addCurrentDog", {
+      name: this.name,
+      bredFor: this.bredFor,
+      height: this.height,
+      weight: this.weight,
+      id: this.id,
+      lifeSpan: this.lifeSpan,
+      characteristics: this.characteristics,
+      countryCode: this.countryCode,
+      dogPic: this.dogPic,
+    });
+    this.$router.push("/detail");
+  }
 }
 </script>
 
@@ -67,7 +85,8 @@ export default class DogCard extends Vue {
 }
 
 .card:hover {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.473);
+  box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.473),
+    0 6px 20px 0 rgba(0, 0, 0, 0.582);
   transition: 0.25s;
 }
 
@@ -103,14 +122,6 @@ title {
   margin: 0px;
   flex-wrap: wrap;
   flex: 1 1 auto;
-}
-
-.d-flex {
-  display: flex;
-}
-
-.center {
-  justify-content: center;
 }
 
 @media only screen and (max-width: 600px) {
