@@ -20,4 +20,5 @@ export interface Dog {
   characteristics: Array<string>;
   dogPic: string
   countryCode: string
+  bg: string
 }

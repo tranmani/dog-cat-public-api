@@ -3,7 +3,7 @@
     <div class="img d-flex center" @click="seeDetail">
       <img :src="dogPic" class="img-content" />
       <div class="card-title">
-        <div class="title">{{ truncate(name, 20, "...") }}</div>
+        <div class="breed-title">{{ truncate(name, 20, "...") }}</div>
       </div>
     </div>
     <div class="d-flex row center h-pa-5">
@@ -39,6 +39,7 @@ export default class DogCard extends Vue {
   @Prop({ required: false }) characteristics!: Array<string>;
   @Prop({ required: false, default: "" }) countryCode!: string;
   @Prop({ required: true }) dogPic!: string;
+  @Prop({ required: true }) bg!: string;
 
   // mounted() {
   // }
@@ -68,8 +69,9 @@ export default class DogCard extends Vue {
       characteristics: this.characteristics,
       countryCode: this.countryCode,
       dogPic: this.dogPic,
+      bg: this.bg
     });
-    this.$router.push("/detail");
+    this.$emit('clickedDog');
   }
 }
 </script>
@@ -78,7 +80,6 @@ export default class DogCard extends Vue {
 .card {
   width: 300px;
   border-radius: 18px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   background-color: #f3f3f3;
   overflow: hidden;
   transition: 0.25s;
@@ -110,12 +111,15 @@ export default class DogCard extends Vue {
   height: 15%;
   bottom: 0px;
   width: 100%;
-  text-align: center;
-  vertical-align: middle;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-title {
-  font-size: 1em;
+.breed-title {
+  vertical-align: middle;
+  font-size: 1.3em;
+  font-weight: bold;
 }
 
 .row {
@@ -124,13 +128,19 @@ title {
   flex: 1 1 auto;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 900px) {
+  .breed-title {
+    font-size: 1em;
+  }
+
   .card {
     width: 200px;
   }
 
   .img {
+    height: 170px;
     width: 200px;
   }
+
 }
 </style>

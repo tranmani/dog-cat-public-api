@@ -19,6 +19,7 @@ const state: DogState = {
     characteristics: [],
     dogPic: "",
     countryCode: "",
+    bg: ""
   }
 }
 
@@ -43,9 +44,23 @@ const getters: DogGetter = {
 }
 
 const mutations: MutationTree<DogState> = {
-  copyDisplayDogs(state): void {
+  copyDisplayDogs(state, payload: {nr: number, random: boolean}): void {
+    if (payload.random) {
+      for (let i = 0; i < payload.nr; i++) {
+        const random = Math.floor(Math.random() * state.dogs.length) + 1
+        state.displayDogs.push(state.dogs[random])
+      }
+    }
+    else {
+      state.displayDogs = []
+      state.displayDogs = [...state.dogs.slice(state.currentPage, state.currentPage + payload.nr)]
+    }
+  },
+  fillDisplayDogs(state, payload: Dog): void {
+    state.displayDogs.push(payload)
+  },
+  emptyDisplayDogs(state): void {
     state.displayDogs = []
-    state.displayDogs = [...state.dogs.slice(state.currentPage, state.currentPage + 10)]
   },
   addDog(state, newDog: Dog): void {
     state.dogs.push(newDog)
@@ -53,6 +68,10 @@ const mutations: MutationTree<DogState> = {
   addDogPic(state, payload: { dogPic: string, id: number }): void {
     const index = state.dogs.findIndex((obj => obj.id == payload.id))
     state.dogs[index].dogPic = payload.dogPic
+  },
+  addDogPicToDispayDogs(state, payload: { dogPic: string, id: number }): void {
+    const index = state.displayDogs.findIndex((obj => obj.id == payload.id))
+    state.displayDogs[index].dogPic = payload.dogPic
   },
   emptyDogs(state): void {
     state.dogs.splice(0, state.dogs.length)

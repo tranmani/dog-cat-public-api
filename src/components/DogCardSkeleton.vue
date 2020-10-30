@@ -1,7 +1,6 @@
 <template>
-  <v-skeleton-loader
-    class="mx-auto"
-    width="300"
+  <v-skeleton-loader class="rounded-lg card"
+    :width="$store.getters.mobile == 'xs' ? 200 : 300"
     type="card"
   ></v-skeleton-loader>
 </template>
@@ -11,6 +10,3 @@ import { Component, Vue } from "vue-property-decorator";
 @Component
 export default class DogCard extends Vue {}
 </script>
-
-<style lang="scss" scoped>
-</style>

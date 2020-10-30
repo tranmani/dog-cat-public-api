@@ -1,5 +1,5 @@
 <template>
-  <div :class="bgGrad" class="d-flex center">
+  <div :class="bgGrad()" class="d-flex center">
     <div class="home">
       <v-row>
         <v-col cols="1">
@@ -7,10 +7,10 @@
             <v-btn
               icon
               large
-              fab
+              :fab="$store.getters.mobile != 'xs'"
               color="indigo"
               outlined
-              class="btn-page"
+              class="btn-page btn-page-left"
               @click="getDogPics(false) && isNext == false"
               :disabled="$store.getters.currentPage == 0"
               ><v-icon>mdi-chevron-left</v-icon></v-btn
@@ -21,14 +21,15 @@
         <v-col cols="10">
           <v-row class="d-flex justify-center" v-if="loaded">
             <DogCard
-              class="ma-5"
+              class="h-ma-5"
               v-for="dog in $store.getters.displayDogs"
               :key="dog.id"
               v-bind="dog"
+              v-on:clickedDog="goToDetailPage"
             />
           </v-row>
           <v-row class="d-flex justify-center" v-if="!loaded">
-            <DogCardSkeleton class="ma-5" v-for="dog in 10" :key="dog.id" />
+            <DogCardSkeleton class="h-ma-5" v-for="dog in 10" :key="dog.id" />
           </v-row>
         </v-col>
         <v-col cols="1">
@@ -36,10 +37,10 @@
             <v-btn
               icon
               large
-              fab
+              :fab="$store.getters.mobile != 'xs'"
               color="indigo"
               outlined
-              class="btn-page"
+              class="btn-page btn-page-right"
               @click="getDogPics(true) && isNext == true"
               :disabled="$store.getters.currentPage == 261"
               ><v-icon>mdi-chevron-right</v-icon></v-btn
@@ -97,6 +98,7 @@ export default class Home extends Vue {
         lifeSpan: element.life_span,
         characteristics: dogChars,
         countryCode: element.countryCode,
+        bg: this.bgGrad()
       });
     });
 
@@ -117,7 +119,7 @@ export default class Home extends Vue {
     // Get 10 dogs for each page
     for (let i = 0; i < 10; i++) {
       const index = this.$store.getters.currentPage + i;
-      Dog.getDog(this.$store.getters.dogs[index].id).then((res) => {
+      Dog.getDogPicture(this.$store.getters.dogs[index].id).then((res) => {
         this.id++;
 
         const dogPic = res.data[0].url;
@@ -130,7 +132,7 @@ export default class Home extends Vue {
         });
 
         if (this.id == 10) {
-          this.$store.commit("copyDisplayDogs");
+          this.$store.commit("copyDisplayDogs", {nr:10, random:false});
           this.loaded = true;
         }
       });
@@ -138,9 +140,16 @@ export default class Home extends Vue {
   }
 
   /**
+   * goToDetailPage Handle emitted event from DogCard component
+   */
+  public goToDetailPage() {
+    this.$router.push("/detail")
+  }
+
+  /**
    * bgGrad Return random background css
    */
-  public get bgGrad(): string {
+  public bgGrad(): string {
     const random = Math.floor(Math.random() * 8) + 1;
     switch (random) {
       case 1:
@@ -182,13 +191,19 @@ export default class Home extends Vue {
   position: fixed;
 }
 
+.btn-page-left {
+  left: 5%;
+}
+
+.btn-page-right {
+  right: 5%;
+}
+
 .home {
   width: 90%;
 }
 
 @media only screen and (max-width: 600px) {
-  .navi-btn {
-    bottom: 48px;
-  }
+
 }
 </style>

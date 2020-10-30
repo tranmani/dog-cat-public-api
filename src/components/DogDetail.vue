@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex center">
-    <div class="card" :class="bgGrad">
+    <div class="card" :class="$store.getters.currentDog.bg">
       <v-row>
         <v-col
           :cols="$store.getters.mobile == 'xs' ? 12 : 6"
@@ -33,21 +33,21 @@
           </v-row>
 
           <v-row>
-            <v-col cols="6">
+            <v-col cols="6" v-if="$store.getters.currentDog.bredFor">
               <v-row class="center"><h4>Bred for</h4></v-row>
               <v-row class="center"
                 ><p>{{ $store.getters.currentDog.bredFor }}</p></v-row
               >
             </v-col>
 
-            <v-col cols="6">
+            <v-col :cols="$store.getters.currentDog.bredFor ? 6 : 12">
               <v-row class="center"><h4>Life span</h4></v-row>
               <v-row class="center"
                 ><p>{{ $store.getters.currentDog.lifeSpan }}</p></v-row
               >
             </v-col>
           </v-row>
-          <v-col>
+          <v-col v-if="$store.getters.currentDog.characteristics.length != 0">
             <v-row class="center">
               <h4>Characteristics</h4>
             </v-row>
@@ -135,7 +135,7 @@ export default class DogDetail extends Vue {
 
 h4 {
   font-weight: bold;
-  text-transform: capitalize;
+  text-transform: uppercase;
 }
 
 p {

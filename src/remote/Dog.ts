@@ -5,10 +5,17 @@ const imageEnpoint = 'images/search?breed_id='
 const breedsEnpoint = 'breeds'
 
 export default {
-    getDog(id: number) {
+    getDogPicture(id: number) {
         return AxiosClient({
             method: 'get',
             url: `${baseUrl}${imageEnpoint}${id}`
+        });
+    },
+    getDogBreedByName(q: string) {
+        const dogName = q.split(' ')[0]
+        return AxiosClient({
+            method: 'get',
+            url: `${baseUrl}${breedsEnpoint}/search/?q=${dogName}`
         });
     },
     async getDogBreeds() {
