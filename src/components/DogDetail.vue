@@ -2,21 +2,16 @@
   <div class="d-flex center">
     <div class="card" :class="bgGrad">
       <v-row>
-        <v-col cols="6" class="img-wraper">
+        <v-col
+          :cols="$store.getters.mobile == 'xs' ? 12 : 6"
+          class="img-wraper"
+        >
           <div class="img-container center">
             <img :src="$store.getters.currentDog.dogPic" class="img-content" />
           </div>
-          <!-- <div class="d-flex row center h-pa-5">
-          <Chip
-            v-for="char in characteristics"
-            :key="char"
-            :name="char"
-            class="h-ma-8"
-          />
-        </div> -->
         </v-col>
 
-        <v-col cols="6">
+        <v-col :cols="$store.getters.mobile == 'xs' ? 12 : 6">
           <h2 class="d-flex center">{{ $store.getters.currentDog.name }}</h2>
           <span v-if="$store.getters.currentDog.countryCode">{{
             $store.getters.currentDog.countryCode
@@ -24,32 +19,32 @@
           <v-row>
             <v-col cols="6">
               <v-row class="center"><h4>Weight</h4></v-row>
-              <v-row class="center">{{
-                $store.getters.currentDog.weight
-              }}</v-row>
+              <v-row class="center"
+                ><p>{{ $store.getters.currentDog.weight }}</p></v-row
+              >
             </v-col>
 
             <v-col cols="6">
               <v-row class="center"><h4>Height</h4></v-row>
-              <v-row class="center">{{
-                $store.getters.currentDog.height
-              }}</v-row>
+              <v-row class="center"
+                ><p>{{ $store.getters.currentDog.height }}</p></v-row
+              >
             </v-col>
           </v-row>
 
           <v-row>
             <v-col cols="6">
               <v-row class="center"><h4>Bred for</h4></v-row>
-              <v-row class="center">{{
-                $store.getters.currentDog.bredFor
-              }}</v-row>
+              <v-row class="center"
+                ><p>{{ $store.getters.currentDog.bredFor }}</p></v-row
+              >
             </v-col>
 
             <v-col cols="6">
               <v-row class="center"><h4>Life span</h4></v-row>
-              <v-row class="center">{{
-                $store.getters.currentDog.lifeSpan
-              }}</v-row>
+              <v-row class="center"
+                ><p>{{ $store.getters.currentDog.lifeSpan }}</p></v-row
+              >
             </v-col>
           </v-row>
           <v-col>
@@ -57,12 +52,12 @@
               <h4>Characteristics</h4>
             </v-row>
 
-            <v-row>
+            <v-row class="center">
               <Chip
                 v-for="char in $store.getters.currentDog.characteristics"
                 :key="char"
                 :name="char"
-                :size="'chip-lg'"
+                :size="$store.getters.mobile == 'xs' ? 'chip-md' : 'chip-lg'"
                 class="h-ma-8"
               /> </v-row
           ></v-col>
@@ -83,9 +78,8 @@ import "@/assets/style.scss";
   },
 })
 export default class DogDetail extends Vue {
-  mounted() {
-    console.log(this.$store.getters.currentDog.dogPic);
-  }
+  // mounted() {
+  // }
 
   /**
    * bgGrad Return random background css
@@ -134,15 +128,29 @@ export default class DogDetail extends Vue {
 
 .card {
   overflow: hidden;
-  // padding: 15px 27px;
   margin: 30px 0;
   width: 70%;
   border-radius: 18px;
 }
 
+h4 {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+p {
+  font-size: 1.1em;
+}
+
+@media only screen and (max-width: 1000px) {
+  .card {
+    width: 85%;
+  }
+}
+
 @media only screen and (max-width: 600px) {
-  .navi-btn {
-    bottom: 48px;
+  .card {
+    width: 90%;
   }
 }
 </style>

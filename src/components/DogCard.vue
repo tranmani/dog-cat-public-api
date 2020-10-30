@@ -125,8 +125,12 @@ title {
 }
 
 @media only screen and (max-width: 600px) {
-  .navi-btn {
-    bottom: 48px;
+  .card {
+    width: 200px;
+  }
+
+  .img {
+    width: 200px;
   }
 }
 </style>

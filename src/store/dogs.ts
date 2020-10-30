@@ -1,10 +1,10 @@
 import { GetterTree, MutationTree } from 'vuex'
-import { State, Dog } from './types'
+import { DogState, Dog } from './types'
 /* eslint-disable */
 
-type DogGetter = GetterTree<State, any>
+type DogGetter = GetterTree<DogState, any>
 
-const state: State = {
+const state: DogState = {
   displayDogs: [],
   dogs: [],
   currentPage: 0,
@@ -23,26 +23,26 @@ const state: State = {
 }
 
 const getters: DogGetter = {
-  displayDogs(state: State) {
+  displayDogs(state: DogState) {
     return state.displayDogs
   },
-  dogs(state: State) {
+  dogs(state: DogState) {
     return state.dogs.sort(function (a, b) {
       return a.id - b.id;
     })
   },
-  currentDog(state: State) {
+  currentDog(state: DogState) {
     return state.currentDog
   },
-  currentPage(state: State) {
+  currentPage(state: DogState) {
     return state.currentPage
   },
-  isDog(state: State) {
+  isDog(state: DogState) {
     return state.isDog
   }
 }
 
-const mutations: MutationTree<State> = {
+const mutations: MutationTree<DogState> = {
   copyDisplayDogs(state): void {
     state.displayDogs = []
     state.displayDogs = [...state.dogs.slice(state.currentPage, state.currentPage + 10)]

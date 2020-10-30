@@ -1,5 +1,7 @@
 <template>
-  <DogDetail />
+  <div>
+    <DogDetail />
+  </div>
 </template>
 
 <script lang="ts">
@@ -14,7 +16,9 @@ import "@/assets/style.scss";
   },
 })
 export default class Home extends Vue {
-  // mounted() {}
+  mounted() {
+    if (this.$store.getters.currentDog.id == 0) this.$router.push("/");
+  }
 
   /**
    * bgGrad Return random background css

@@ -22,6 +22,7 @@ export default class Chip extends Vue {
   border-radius: 12px;
   cursor: default;
   transition: 0.25s;
+  user-select: none;
 }
 
 .chip-md {
@@ -32,6 +33,7 @@ export default class Chip extends Vue {
 .chip-lg {
   font-size: 16px;
   height: 34px;
+  border-radius: 20px;
 }
 
 .chip-content {

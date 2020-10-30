@@ -1,6 +1,6 @@
 <template>
   <div :class="bgGrad" class="d-flex center">
-    <div class="container">
+    <div class="home">
       <v-row>
         <v-col cols="1">
           <div class="d-flex justify-center">
@@ -74,6 +74,8 @@ export default class Home extends Vue {
   mounted() {
     if (this.$store.getters.dogs.length == 0) this.getDogBreeds();
     else this.getDogPics(false);
+    this.onResize();
+    window.addEventListener("resize", this.onResize);
   }
 
   /**
@@ -138,7 +140,7 @@ export default class Home extends Vue {
   /**
    * bgGrad Return random background css
    */
-  get bgGrad(): string {
+  public get bgGrad(): string {
     const random = Math.floor(Math.random() * 8) + 1;
     switch (random) {
       case 1:
@@ -160,6 +162,17 @@ export default class Home extends Vue {
     }
     return "bg-grad-1";
   }
+
+  /**
+   * onResize Resize method, get called when window width change
+   */
+  public onResize() {
+    if (window.innerWidth <= 650) {
+      this.$store.commit("updateMobile", "xs");
+    } else if (window.innerWidth <= 1000) {
+      this.$store.commit("updateMobile", "md");
+    }
+  }
 }
 </script>
 
@@ -169,7 +182,7 @@ export default class Home extends Vue {
   position: fixed;
 }
 
-.container {
+.home {
   width: 90%;
 }
 

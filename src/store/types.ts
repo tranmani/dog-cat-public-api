@@ -1,9 +1,13 @@
-export interface State {
+export interface DogState {
   displayDogs: Dog[]
   dogs: Dog[]
   currentDog: Dog
   currentPage: number
   isDog: boolean
+}
+
+export interface UtilState {
+  mobile: string
 }
 
 export interface Dog {
