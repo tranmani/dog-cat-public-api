@@ -2,20 +2,16 @@
   <div class="d-flex center">
     <div class="card" :class="$store.getters.currentDog.bg">
       <v-row>
-        <v-col
-          :cols="$store.getters.mobile == 'xs' ? 12 : 6"
-          class="img-wraper"
-        >
+        <v-col :cols="$store.getters.mobile == 'xs' ? 12 : 6" class="img-wraper">
           <div class="img-container center">
-            <img :src="$store.getters.currentDog.dogPic" class="img-content" />
+            <img v-if="loaded" :src="$store.getters.currentDog.dogPic" class="img-content" />
+            <v-progress-circular v-if="!loaded" :size="70" :width="7" color="purple" indeterminate></v-progress-circular>
           </div>
         </v-col>
 
-        <v-col :cols="$store.getters.mobile == 'xs' ? 12 : 6">
+        <v-col :cols="$store.getters.mobile == 'xs' ? 12 : 6" class="breed-detail">
           <h2 class="d-flex center">{{ $store.getters.currentDog.name }}</h2>
-          <span v-if="$store.getters.currentDog.countryCode">{{
-            $store.getters.currentDog.countryCode
-          }}</span>
+          <span v-if="$store.getters.currentDog.countryCode">{{ $store.getters.currentDog.countryCode }}</span>
           <v-row>
             <v-col cols="6">
               <v-row class="center"><h4>Weight</h4></v-row>
@@ -47,16 +43,16 @@
               >
             </v-col>
           </v-row>
-          <v-col v-if="$store.getters.currentDog.characteristics.length != 0">
+          <v-col v-if="$store.getters.currentDog.traits.length != 0">
             <v-row class="center">
-              <h4>Characteristics</h4>
+              <h4>Traits</h4>
             </v-row>
 
             <v-row class="center">
               <Chip
-                v-for="char in $store.getters.currentDog.characteristics"
-                :key="char"
-                :name="char"
+                v-for="trait in $store.getters.currentDog.traits"
+                :key="trait"
+                :name="trait"
                 :size="$store.getters.mobile == 'xs' ? 'chip-md' : 'chip-lg'"
                 class="h-ma-8"
               /> </v-row
@@ -78,8 +74,7 @@ import "@/assets/style.scss";
   },
 })
 export default class DogDetail extends Vue {
-  // mounted() {
-  // }
+  @Prop({ required: false, type: Boolean }) loaded!: boolean;
 
   /**
    * bgGrad Return random background css
@@ -126,6 +121,10 @@ export default class DogDetail extends Vue {
   padding: 0;
 }
 
+.breed-detail {
+  padding: 30px;
+}
+
 .card {
   overflow: hidden;
   margin: 30px 0;
@@ -136,6 +135,10 @@ export default class DogDetail extends Vue {
 h4 {
   font-weight: bold;
   text-transform: uppercase;
+}
+
+h2 {
+  padding: 0 0 20px 0;
 }
 
 p {

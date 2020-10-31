@@ -41,6 +41,7 @@ export default class Chip extends Vue {
   display: inline-flex;
   height: 100%;
   max-width: 100%;
+  font-size: 1.2em;
 }
 .chip:hover {
   background-color: rgba(168, 168, 168, 0.87);

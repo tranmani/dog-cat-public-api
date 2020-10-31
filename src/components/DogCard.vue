@@ -6,13 +6,8 @@
         <div class="breed-title">{{ truncate(name, 20, "...") }}</div>
       </div>
     </div>
-    <div class="d-flex row center h-pa-5">
-      <Chip
-        v-for="char in characteristics"
-        :key="char"
-        :name="char"
-        class="h-ma-8"
-      />
+    <div class="d-flex row center h-pa-5" v-if="traits.length > 0">
+      <Chip v-for="trait in traits.slice(0, 5)" :key="trait" :name="trait" class="h-ma-8" />
     </div>
   </div>
 </template>
@@ -36,13 +31,10 @@ export default class DogCard extends Vue {
   @Prop({ required: true }) weight!: string;
   @Prop({ required: true }) id!: number;
   @Prop({ required: true }) lifeSpan!: string;
-  @Prop({ required: false }) characteristics!: Array<string>;
+  @Prop({ required: false }) traits!: Array<string>;
   @Prop({ required: false, default: "" }) countryCode!: string;
   @Prop({ required: true }) dogPic!: string;
   @Prop({ required: true }) bg!: string;
-
-  // mounted() {
-  // }
 
   /**
    * truncate Truncate dog's name if it is too long
@@ -66,12 +58,14 @@ export default class DogCard extends Vue {
       weight: this.weight,
       id: this.id,
       lifeSpan: this.lifeSpan,
-      characteristics: this.characteristics,
+      traits: this.traits,
       countryCode: this.countryCode,
       dogPic: this.dogPic,
-      bg: this.bg
+      bg: this.bg,
     });
-    this.$emit('clickedDog');
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    this.$emit("clickedDog");
   }
 }
 </script>
@@ -86,8 +80,7 @@ export default class DogCard extends Vue {
 }
 
 .card:hover {
-  box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.473),
-    0 6px 20px 0 rgba(0, 0, 0, 0.582);
+  box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.473), 0 6px 20px 0 rgba(0, 0, 0, 0.582);
   transition: 0.25s;
 }
 
@@ -141,6 +134,20 @@ export default class DogCard extends Vue {
     height: 170px;
     width: 200px;
   }
+}
 
+@media only screen and (max-width: 631px) {
+  .breed-title {
+    font-size: 1em;
+  }
+
+  .card {
+    width: 250px;
+  }
+
+  .img {
+    height: 200px;
+    width: 250px;
+  }
 }
 </style>

@@ -1,11 +1,11 @@
-import { GetterTree, MutationTree } from 'vuex'
-import { DogState, Dog } from './types'
+import { GetterTree, MutationTree } from "vuex";
+import { DogState, Dog } from "./types";
+import { utils } from "./utils";
 /* eslint-disable */
 
-type DogGetter = GetterTree<DogState, any>
+type DogGetter = GetterTree<DogState, any>;
 
 const state: DogState = {
-  displayDogs: [],
   dogs: [],
   currentPage: 0,
   isDog: true,
@@ -16,87 +16,80 @@ const state: DogState = {
     weight: "",
     id: 0,
     lifeSpan: "",
-    characteristics: [],
+    traits: [],
     dogPic: "",
     countryCode: "",
-    bg: ""
-  }
-}
+    bg: "",
+  },
+};
 
 const getters: DogGetter = {
-  displayDogs(state: DogState) {
-    return state.displayDogs
+  dogs(state: DogState): Array<Dog> {
+    switch (utils.state.sort) {
+      case "nameDesc":
+        return state.dogs.sort((a, b) => b.name.localeCompare(a.name));
+      case "weightDesc":
+        return state.dogs.sort((a, b) => parseInt(b.weight.split(" ")[0]) - parseInt(a.weight.split(" ")[0]));
+      case "weightAsc":
+        return state.dogs.sort((a, b) => parseInt(a.weight.split(" ")[0]) - parseInt(b.weight.split(" ")[0]));
+      case "heightDesc":
+        return state.dogs.sort((a, b) => parseInt(b.height.split(" ")[0]) - parseInt(a.height.split(" ")[0]));
+      case "heightAsc":
+        return state.dogs.sort((a, b) => parseInt(a.height.split(" ")[0]) - parseInt(b.height.split(" ")[0]));
+      case "lifeSpanDesc":
+        return state.dogs.sort((a, b) => parseInt(b.lifeSpan.split(" ")[0]) - parseInt(a.lifeSpan.split(" ")[0]));
+      case "LifeSpanAsc":
+        return state.dogs.sort((a, b) => parseInt(a.lifeSpan.split(" ")[0]) - parseInt(b.lifeSpan.split(" ")[0]));
+      default:
+        return state.dogs.sort((a, b) => a.name.localeCompare(b.name));
+    }
   },
-  dogs(state: DogState) {
-    return state.dogs.sort(function (a, b) {
-      return a.id - b.id;
-    })
+  currentDog(state: DogState): Dog {
+    return state.currentDog;
   },
-  currentDog(state: DogState) {
-    return state.currentDog
+  currentPage(state: DogState): number {
+    return state.currentPage;
   },
-  currentPage(state: DogState) {
-    return state.currentPage
+  isDog(state: DogState): boolean {
+    return state.isDog;
   },
-  isDog(state: DogState) {
-    return state.isDog
-  }
-}
+};
 
 const mutations: MutationTree<DogState> = {
-  copyDisplayDogs(state, payload: {nr: number, random: boolean}): void {
-    if (payload.random) {
-      for (let i = 0; i < payload.nr; i++) {
-        const random = Math.floor(Math.random() * state.dogs.length) + 1
-        state.displayDogs.push(state.dogs[random])
-      }
-    }
-    else {
-      state.displayDogs = []
-      state.displayDogs = [...state.dogs.slice(state.currentPage, state.currentPage + payload.nr)]
-    }
-  },
-  fillDisplayDogs(state, payload: Dog): void {
-    state.displayDogs.push(payload)
-  },
-  emptyDisplayDogs(state): void {
-    state.displayDogs = []
-  },
   addDog(state, newDog: Dog): void {
-    state.dogs.push(newDog)
+    state.dogs.push(newDog);
   },
-  addDogPic(state, payload: { dogPic: string, id: number }): void {
-    const index = state.dogs.findIndex((obj => obj.id == payload.id))
-    state.dogs[index].dogPic = payload.dogPic
-  },
-  addDogPicToDispayDogs(state, payload: { dogPic: string, id: number }): void {
-    const index = state.displayDogs.findIndex((obj => obj.id == payload.id))
-    state.displayDogs[index].dogPic = payload.dogPic
+  addDogPic(state, payload: { dogPic: string; id: number }): void {
+    const index = state.dogs.findIndex((obj) => obj.id == payload.id);
+    state.dogs[index].dogPic = payload.dogPic;
   },
   emptyDogs(state): void {
-    state.dogs.splice(0, state.dogs.length)
+    state.dogs.splice(0, state.dogs.length);
   },
   addCurrentDog(state, newDog: Dog): void {
-    Object.assign(state.currentDog, newDog)
+    Object.assign(state.currentDog, newDog);
   },
   emptyCurrentDog(state): void {
-    const emptyDog = {}
-    Object.assign(state.currentDog, emptyDog)
+    const emptyDog = {};
+    Object.assign(state.currentDog, emptyDog);
   },
   nextPage(state): void {
-    state.currentPage += 10
+    state.currentPage += 10;
   },
   previousPage(state): void {
-    state.currentPage -= 10
-    if (state.currentPage < 0) state.currentPage = 0
+    state.currentPage -= 10;
+    if (state.currentPage < 0) state.currentPage = 0;
+  },
+  resetPage(state): void {
+    state.currentPage = 0;
   },
   updateIsDog(state): void {
-    state.isDog = !state.isDog
-  }
-}
+    state.isDog = !state.isDog;
+  },
+};
 
 export const dogs = {
   state,
   getters,
-  mutations
-}
+  mutations,
+};

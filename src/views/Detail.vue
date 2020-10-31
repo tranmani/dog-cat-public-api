@@ -1,18 +1,13 @@
 <template>
   <div class="detail-container">
-    <DogDetail />
+    <DogDetail :loaded="true" />
 
     <h2>Related</h2>
 
     <v-row class="d-flex justify-center" v-if="loaded">
-      <DogCard 
-        class="h-ma-5"
-        v-for="dog in $store.getters.displayDogs"
-        :key="dog.id"
-        v-bind="dog" 
-        v-on:clickedDog="getRelevantBreed"
-      />
+      <DogCard class="h-ma-5" v-for="dog in displayDogs" :key="dog.id" v-bind="dog" v-on:clickedDog="getRelevantBreed" />
     </v-row>
+
     <v-row class="d-flex justify-center" v-if="!loaded">
       <DogCardSkeleton class="h-ma-5" v-for="dog in 3" :key="dog.id" />
     </v-row>
@@ -26,60 +21,64 @@ import DogCardSkeleton from "@/components/DogCardSkeleton.vue";
 import DogCard from "@/components/DogCard.vue";
 import DogRes from "../remote/Dog";
 import "@/assets/style.scss";
-import { Dog } from '@/store/types';
+import { Dog } from "@/store/types";
 
 @Component({
   components: {
     DogDetail,
     DogCard,
-    DogCardSkeleton
+    DogCardSkeleton,
   },
 })
 export default class Home extends Vue {
   private relevantDogs!: Dog[];
-  private loaded = false
-  private id = 0
+  private loaded = false;
+  private id = 0;
+  private displayDogs: Array<Dog> = [];
 
   mounted() {
     if (this.$store.getters.currentDog.id == 0) this.$router.push("/");
-    this.getRelevantBreed()
+    this.getRelevantBreed();
   }
-  
+
   /**
    * getRelevantBreed Get relevant breed by first word of their name,
    * if not found then fill in random breed
    */
   public getRelevantBreed() {
-    this.$store.commit('emptyDisplayDogs')
-    this.id = 0
-    this.loaded = false
-    let relevantBreed = 0
+    this.displayDogs = [];
+    this.id = 0;
+    this.loaded = false;
+    let relevantBreed = 0;
 
-    DogRes.getDogBreedByName(this.$store.getters.currentDog.name).then(res => {
+    DogRes.getDogBreedByName(this.$store.getters.currentDog.name).then((res) => {
       for (let i = 0; i < res.data.length; i++) {
         // Ignore breed id if it is already displaying
-        if (res.data[i].id == this.$store.getters.currentDog.id) continue
+        if (res.data[i].id == this.$store.getters.currentDog.id) continue;
         // Stop if displayDogs array length is already = 3
-        if (this.$store.getters.displayDogs.length == 3) break
+        if (this.displayDogs.length == 3) break;
 
         // Search for breed id in dogs vuex store and copy it to displayDogs array
-        const index = this.$store.getters.dogs.findIndex(((obj: { id: any }) => obj.id == res.data[i].id))
+        const index = this.$store.getters.dogs.findIndex((obj: { id: any }) => obj.id == res.data[i].id);
         // Filter out breed which is not in breed database
-        if (index == -1) continue
+        if (index == -1) continue;
 
-        relevantBreed++
+        relevantBreed++;
         // Copy relevant breed to displayDogs array
-        this.$store.commit('fillDisplayDogs', this.$store.getters.dogs[index])
+        this.displayDogs.push(this.$store.getters.dogs[index]);
       }
 
       // Copy random breed to displayDogs array
-      this.$store.commit("copyDisplayDogs", {nr: 3 - relevantBreed, random: true});
+      for (let i = 0; i < 3 - relevantBreed; i++) {
+        const random = Math.floor(Math.random() * this.$store.getters.dogs.length) + 1;
+        this.displayDogs.push(this.$store.getters.dogs[random]);
+      }
 
       // Get picture from API for each breed
-      this.$store.getters.displayDogs.forEach((element: { id: number }) => {
-        this.getBreedPic(element.id)
+      this.displayDogs.forEach((element: { id: number }) => {
+        this.getBreedPic(element.id);
       });
-    })
+    });
   }
 
   /**
@@ -91,16 +90,14 @@ export default class Home extends Vue {
       const dog = res.data[0].breeds[0];
 
       // Put each breed picture to displayDogs array
-      this.$store.commit("addDogPicToDispayDogs", {
-        id: dog.id,
-        dogPic: dogPic,
-      });
+      const index = this.displayDogs.findIndex((obj) => obj.id == dog.id);
+      this.displayDogs[index].dogPic = dogPic;
 
       this.id++;
-      if (this.id == 3) {
+      if (this.id == this.displayDogs.length) {
         this.loaded = true;
       }
-    })
+    });
   }
 }
 </script>
@@ -108,12 +105,12 @@ export default class Home extends Vue {
 <style lang="scss" scoped>
 .detail-container {
   text-align: center;
-  padding: 10px 0 30px 0
+  padding: 10px 0 30px 0;
 }
 
 @media only screen and (max-width: 600px) {
   .detail-container {
-    padding: 0 0 15px 0
+    padding: 0 0 15px 0;
   }
 }
 </style>

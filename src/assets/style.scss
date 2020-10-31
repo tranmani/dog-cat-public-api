@@ -1,3 +1,12 @@
+@font-face {
+  font-family: Dosis;
+  src: url(./Dosis-Medium.ttf) format("truetype");
+}
+
+* {
+  font-family: Dosis;
+}
+
 .bg-grad-1 {
   background-color: #0093e9;
   background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
@@ -53,4 +62,13 @@
 
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.col-6 {
+  padding: 0;
+}
+
+.row {
+  margin: 0;
+  padding: 0;
 }

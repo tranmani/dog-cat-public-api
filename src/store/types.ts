@@ -1,13 +1,13 @@
 export interface DogState {
-  displayDogs: Dog[]
-  dogs: Dog[]
-  currentDog: Dog
-  currentPage: number
-  isDog: boolean
+  dogs: Dog[];
+  currentDog: Dog;
+  currentPage: number;
+  isDog: boolean;
 }
 
 export interface UtilState {
-  mobile: string
+  mobile: string;
+  sort: string;
 }
 
 export interface Dog {
@@ -17,8 +17,8 @@ export interface Dog {
   weight: string;
   id: number;
   lifeSpan: string;
-  characteristics: Array<string>;
-  dogPic: string
-  countryCode: string
-  bg: string
+  traits: Array<string>;
+  dogPic: string;
+  countryCode: string;
+  bg: string;
 }

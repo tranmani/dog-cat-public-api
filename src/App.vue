@@ -29,9 +29,7 @@
 
         <v-divider></v-divider>
 
-        <v-card-text class="white--text">
-          {{ new Date().getFullYear() }} — <strong>Vuetify</strong>
-        </v-card-text>
+        <v-card-text class="white--text"> {{ new Date().getFullYear() }} — <strong>Vuetify</strong> </v-card-text>
       </v-card>
     </v-footer>
   </v-app>
@@ -58,3 +56,21 @@ export default Vue.extend({
   }),
 });
 </script>
+
+<style lang="scss" scoped>
+// font-face {
+//   font-family: Dosis;
+//   src: url(././assets/Dosis-Regular.ttf) format("truetype");
+// }
+
+// * {
+//   font-family: Dosis;
+// }
+
+// p {
+//   font-family: Dosis;
+// }
+// h2 {
+//   font-family: Dosis;
+// }
+</style>
