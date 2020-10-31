@@ -1,6 +1,7 @@
 <template>
-  <v-skeleton-loader class="rounded-lg card"
-    :width="$store.getters.mobile == 'xs' || $store.getters.mobile == 'md' ? 200 : 300"
+  <v-skeleton-loader
+    class="rounded-lg card"
+    :width="$store.getters.mobile == 'xs' || $store.getters.mobile == 'md' ? 250 : 300"
     type="card"
   ></v-skeleton-loader>
 </template>

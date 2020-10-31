@@ -1,15 +1,14 @@
+import Vue from "vue";
+import Vuex from "vuex";
 
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { breeds } from "./breeds";
+import { utils } from "./utils";
 
-import { dogs } from './dogs'
-import { utils } from './utils'
-
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   modules: {
-    dogs,
-    utils
-  }
-})
+    breeds,
+    utils,
+  },
+});

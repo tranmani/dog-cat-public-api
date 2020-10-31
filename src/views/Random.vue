@@ -1,6 +1,6 @@
 <template>
   <div class="random-container">
-    <DogDetail :loaded="loaded" />
+    <BreedDetail :loaded="loaded" />
 
     <v-btn text :ripple="false" class="btn-surprise" @click="getRandomBreed">
       <v-icon x-large>mdi-cached</v-icon>
@@ -11,19 +11,29 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import DogDetail from "@/components/DogDetail.vue";
+import BreedDetail from "@/components/BreedDetail.vue";
 import DogRes from "../remote/Dog";
+import CatRes from "../remote/Cat";
+import { Getter, Mutation } from "vuex-class";
+import { Breed } from "@/store/types";
 
 @Component({
   components: {
-    DogDetail,
+    BreedDetail,
   },
 })
 export default class Home extends Vue {
+  @Getter("breeds") breeds!: Array<Breed>;
+  @Getter("currentBreed") currentBreed!: Breed;
+  @Getter("isDog") isDog!: boolean;
+
+  @Mutation("addCurrentBreed") addCurrentBreed!: any;
+  @Mutation("addBreedPic") addBreedPic!: any;
+
   private loaded = true;
 
   mounted() {
-    if (this.$store.getters.currentDog.id == 0) this.$router.push("/");
+    if (this.currentBreed.id == 0) this.$router.push("/");
     this.getRandomBreed();
   }
 
@@ -32,7 +42,7 @@ export default class Home extends Vue {
    */
   public getRandomBreed() {
     this.loaded = false;
-    const random = this.$store.getters.dogs[Math.floor(Math.random() * this.$store.getters.dogs.length)];
+    const random = this.breeds[Math.floor(Math.random() * this.breeds.length)];
 
     this.getBreedPic(random.id);
   }
@@ -41,20 +51,37 @@ export default class Home extends Vue {
    * getBreedPic get breed pic from id
    */
   public getBreedPic(id: number) {
-    DogRes.getDogPicture(id).then((res) => {
-      const dogPic = res.data[0].url;
-      const dog = res.data[0].breeds[0];
-      const index = this.$store.getters.dogs.findIndex((obj: { id: any }) => obj.id == id);
+    if (this.isDog) {
+      DogRes.getDogPicture(id).then((res) => {
+        const breedPic = res.data[0].url;
+        const breed = res.data[0].breeds[0];
+        const index = this.breeds.findIndex((obj: { id: any }) => obj.id == id);
 
-      // Put breed picture to displayDogs array
-      this.$store.commit("addDogPic", {
-        id: dog.id,
-        dogPic: dogPic,
+        // Put breed picture to displayDogs array
+        this.addBreedPic({
+          id: breed.id,
+          pic: breedPic,
+        });
+
+        this.addCurrentBreed(this.breeds[index]);
+        this.loaded = true;
       });
+    } else {
+      CatRes.getCatPicture(id).then((res) => {
+        const breedPic = res.data[0].url;
+        const breed = res.data[0].breeds[0];
+        const index = this.breeds.findIndex((obj: { id: any }) => obj.id == id);
 
-      this.$store.commit("addCurrentDog", this.$store.getters.dogs[index]);
-      this.loaded = true;
-    });
+        // Put breed picture to displayDogs array
+        this.addBreedPic({
+          id: breed.id,
+          pic: breedPic,
+        });
+
+        this.addCurrentBreed(this.breeds[index]);
+        this.loaded = true;
+      });
+    }
   }
 }
 </script>
@@ -73,7 +100,7 @@ export default class Home extends Vue {
 
 @media only screen and (max-width: 600px) {
   .random-container {
-    padding: 0 0 20px 0;
+    padding: 0 0 30px 0;
   }
 }
 </style>

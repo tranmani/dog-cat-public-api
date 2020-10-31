@@ -7,6 +7,7 @@ type UtilGetter = GetterTree<UtilState, any>;
 const state: UtilState = {
   mobile: "md",
   sort: "default",
+  currentPage: 0,
 };
 
 const getters: UtilGetter = {
@@ -16,6 +17,9 @@ const getters: UtilGetter = {
   sort(state: UtilState) {
     return state.sort;
   },
+  currentPage(state: UtilState): number {
+    return state.currentPage;
+  },
 };
 
 const mutations: MutationTree<UtilState> = {
@@ -24,6 +28,16 @@ const mutations: MutationTree<UtilState> = {
   },
   updateSort(state, payload): void {
     state.sort = payload;
+  },
+  nextPage(state): void {
+    state.currentPage += 10;
+  },
+  previousPage(state): void {
+    state.currentPage -= 10;
+    if (state.currentPage < 0) state.currentPage = 0;
+  },
+  resetPage(state): void {
+    state.currentPage = 0;
   },
 };
 

@@ -2,8 +2,13 @@
   <div :class="bgGrad()" class="d-flex center">
     <div class="home">
       <v-row class="center">
-        <v-col :cols="$store.getters.mobile == 'xs' ? 8 : 4">
-          <v-overflow-btn @change="changeSorting" class="sort-btn" :items="sortOptions" label="Sorting"></v-overflow-btn>
+        <v-col :cols="mobile == 'xs' ? 10 : 4">
+          <v-overflow-btn
+            @change="changeSorting"
+            class="sort-btn"
+            :items="isDog ? sortOptions : sortOptions.slice(0, 6)"
+            label="Sorting"
+          ></v-overflow-btn>
         </v-col>
       </v-row>
       <v-row>
@@ -12,12 +17,12 @@
             <v-btn
               icon
               large
-              :fab="$store.getters.mobile != 'xs'"
+              :fab="mobile != 'xs'"
               color="indigo"
               outlined
               class="btn-page btn-page-left"
-              @click="getDogPics('previous')"
-              :disabled="$store.getters.currentPage == 0"
+              @click="getBreedPics('previous')"
+              :disabled="currentPage == 0"
               ><v-icon>mdi-chevron-left</v-icon></v-btn
             >
           </div>
@@ -25,10 +30,10 @@
 
         <v-col cols="10">
           <v-row class="d-flex justify-center" v-if="loaded">
-            <DogCard class="h-ma-5" v-for="dog in displayDogs" :key="dog.id" v-bind="dog" v-on:clickedDog="goToDetailPage" />
+            <BreedCard class="h-ma-5" v-for="dog in displayBreeds" :key="dog.id" v-bind="dog" v-on:clickedDog="goToDetailPage" />
           </v-row>
           <v-row class="d-flex justify-center" v-if="!loaded">
-            <DogCardSkeleton class="h-ma-5" v-for="dog in 10" :key="dog.id" />
+            <BreedCardSkeleton class="h-ma-5" v-for="dog in 10" :key="dog.id" />
           </v-row>
         </v-col>
 
@@ -37,12 +42,12 @@
             <v-btn
               icon
               large
-              :fab="$store.getters.mobile != 'xs'"
+              :fab="mobile != 'xs'"
               color="indigo"
               outlined
               class="btn-page btn-page-right"
-              @click="getDogPics('next')"
-              :disabled="$store.getters.currentPage == 160"
+              @click="getBreedPics('next')"
+              :disabled="currentPage == 160"
               ><v-icon>mdi-chevron-right</v-icon></v-btn
             >
           </div>
@@ -53,26 +58,40 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import DogCard from "@/components/DogCard.vue";
-import DogCardSkeleton from "@/components/DogCardSkeleton.vue";
+import { Component, Vue, Watch } from "vue-property-decorator";
+import BreedCard from "@/components/BreedCard.vue";
+import BreedCardSkeleton from "@/components/BreedCardSkeleton.vue";
 import DogRes from "../remote/Dog";
+import CatRes from "../remote/Cat";
 import "@/assets/style.scss";
-import { Dog } from "@/store/types";
+import { Breed } from "@/store/types";
+import { Getter, Mutation } from "vuex-class";
 
 @Component({
   components: {
-    DogCard,
-    DogCardSkeleton,
+    BreedCard,
+    BreedCardSkeleton,
   },
 })
 export default class Home extends Vue {
+  @Getter("breeds") breeds!: Array<Breed>;
+  @Getter("currentPage") currentPage!: number;
+  @Getter("mobile") mobile!: string;
+  @Getter("isDog") isDog!: boolean;
+
+  @Mutation("updateMobile") updateMobile!: any;
+  @Mutation("updateSort") updateSort!: any;
+  @Mutation("resetPage") resetPage!: any;
+  @Mutation("nextPage") nextPage!: any;
+  @Mutation("previousPage") previousPage!: any;
+  @Mutation("addBreed") addBreed!: any;
+  @Mutation("addBreedPic") addBreedPic!: any;
+  @Mutation("emptyBreeds") emptyBreeds!: any;
+
   private loaded = false;
   private id = 0;
   private error = 0;
-  private isNext = true;
-  private isGetDog = true;
-  private displayDogs: Array<Dog> = [];
+  private displayBreeds: Array<Breed> = [];
   private sortOptions: Array<string> = [
     "Default",
     "Name Descending",
@@ -84,78 +103,157 @@ export default class Home extends Vue {
     "Height Descending",
   ];
 
+  @Watch("isDog")
+  isDogChanged() {
+    this.emptyBreeds();
+    this.getBreeds();
+  }
+
   mounted() {
-    if (this.$store.getters.dogs.length == 0) this.getDogBreeds();
-    else this.getDogPics();
+    if (this.breeds.length == 0) {
+      this.getBreeds();
+    } else {
+      if (!this.breeds[0].wiki && !this.isDog) this.getBreeds();
+      else if (this.breeds[0].wiki && this.isDog) this.getBreeds();
+      else this.getBreedPics();
+    }
     this.onResize();
     window.addEventListener("resize", this.onResize);
   }
 
   /**
-   * getDogBreeds Get all dog breed information from API
+   * getBreeds Get all breed information
    */
-  public async getDogBreeds() {
-    const dogBreeds = await DogRes.getDogBreeds();
-    dogBreeds.data.forEach((element: any) => {
-      // Toy breed does not have traits, it makes the website look baddd :(
-      if (element.name.toLowerCase().includes("toy")) return;
-      // A few dog breed don't have temperament info
-      let dogTraits: Array<string> = [];
-      if (element.temperament) dogTraits = element.temperament.split(", ");
+  public async getBreeds() {
+    this.emptyBreeds();
+    this.loaded = false;
+    let breeds: any;
+    if (this.isDog) {
+      breeds = await DogRes.getDogBreeds();
+      this.getDogBreeds(breeds);
+    } else {
+      breeds = await CatRes.getCatBreeds();
+      this.getCatBreeds(breeds);
+    }
 
-      this.$store.commit("addDog", {
-        name: element.name,
-        bredFor: element.bred_for,
-        height: element.height.metric + " cm",
-        weight: element.weight.metric + " kg",
-        id: element.id,
-        lifeSpan: element.life_span,
-        traits: dogTraits,
-        countryCode: element.countryCode,
-        bg: this.bgGrad(),
-      });
-    });
-
-    this.getDogPics();
+    this.getBreedPics();
   }
 
   /**
-   * getDogs Get 10 dog Pics based on dog breed id from API
+   * getBreedPics Get breed pics
    */
-  public getDogPics(direction = "Huy"): void {
+  public getBreedPics(direction = "Huy"): void {
     this.scrollToTop();
-    if (direction == "next") this.$store.commit("nextPage");
-    else if (direction == "previous") this.$store.commit("previousPage");
+    if (direction == "next") this.nextPage();
+    else if (direction == "previous") this.previousPage();
 
     this.loaded = false;
-    this.isGetDog = true;
     this.id = 0;
 
-    // Get 10 dogs for each page
+    // Get 10 breeds for each page
     for (let i = 0; i < 10; i++) {
-      const index = this.$store.getters.currentPage + i;
-      DogRes.getDogPicture(this.$store.getters.dogs[index].id).then((res) => {
-        this.id++;
-
-        const dogPic = res.data[0].url;
-        const dog = res.data[0].breeds[0];
-
-        // Put each dog information to vuex store
-        this.$store.commit("addDogPic", {
-          id: dog.id,
-          dogPic: dogPic,
-        });
-
-        if (this.id == 10) {
-          this.displayDogs = [...this.$store.getters.dogs.slice(this.$store.getters.currentPage, this.$store.getters.currentPage + 10)];
-          this.loaded = true;
-        }
-      });
+      const breedId = this.currentPage + i;
+      if (this.isDog) this.getDogPics(breedId);
+      else this.getCatPics(breedId);
     }
   }
 
   /**
-   * goToDetailPage Handle emitted event from DogCard component
+   * getDogBreeds Get all dog breed information from API
+   */
+  public getDogBreeds(breeds: any) {
+    breeds.data.forEach((dog: any) => {
+      // Toy breed does not have traits, it makes the website look baddd :(
+      if (dog.name.toLowerCase().includes("toy")) return;
+      // A few dog breed don't have temperament info
+      let dogTraits: Array<string> = [];
+      if (dog.temperament) dogTraits = dog.temperament.split(", ");
+
+      this.addBreed({
+        name: dog.name,
+        bredFor: dog.bred_for,
+        height: dog.height.metric + " cm",
+        weight: dog.weight.metric + " kg",
+        id: dog.id,
+        lifeSpan: dog.life_span,
+        traits: dogTraits,
+        countryCode: dog.countryCode,
+        bg: this.bgGrad(),
+      });
+    });
+  }
+
+  /**
+   * getDogPics Get 10 dog Pics based on dog breed id from API
+   */
+  public getDogPics(index: number) {
+    DogRes.getDogPicture(this.breeds[index].id).then((res) => {
+      this.id++;
+
+      const pic = res.data[0].url;
+      const dog = res.data[0].breeds[0];
+
+      // Put each dog information to vuex store
+      this.addBreedPic({
+        id: dog.id,
+        pic: pic,
+      });
+
+      if (this.id == 10) {
+        this.displayBreeds = [...this.breeds.slice(this.currentPage, this.currentPage + 10)];
+        this.loaded = true;
+      }
+    });
+  }
+
+  /**
+   * getCatBreeds Get all cat breed information from API
+   */
+  public getCatBreeds(breeds: any) {
+    breeds.data.forEach((cat: any) => {
+      // A few cat breed don't have temperament info
+      let catTraits: Array<string> = [];
+      if (cat.temperament) catTraits = cat.temperament.split(", ");
+
+      this.addBreed({
+        name: cat.name,
+        weight: cat.weight.metric + " kg",
+        id: cat.id,
+        origin: cat.origin,
+        description: cat.description,
+        wiki: cat.wikipedia_url,
+        lifeSpan: cat.life_span,
+        traits: catTraits,
+        bg: this.bgGrad(),
+      });
+    });
+  }
+
+  /**
+   * getCatPics Get 10 cat Pics based on cat breed id from API
+   */
+  public getCatPics(index: any) {
+    CatRes.getCatPicture(this.breeds[index].id).then((res) => {
+      this.id++;
+
+      const pic = res.data[0].url;
+      const dog = res.data[0].breeds[0];
+
+      // Put each dog information to vuex store
+      this.addBreedPic({
+        id: dog.id,
+        pic: pic,
+      });
+
+      if (this.id == 10) {
+        this.displayBreeds = [...this.breeds.slice(this.currentPage, this.currentPage + 10)];
+        this.loaded = true;
+      }
+    });
+  }
+
+  /**
+   * goToDetailPage Handle emitted event from BreedCard component
    */
   public goToDetailPage() {
     this.$router.push("/detail");
@@ -175,9 +273,9 @@ export default class Home extends Vue {
     else if (e === "Height Descending") sortOption = "heightDesc";
     else sortOption = "default";
 
-    this.$store.commit("updateSort", sortOption);
-    this.$store.commit("resetPage");
-    this.getDogPics();
+    this.updateSort(sortOption);
+    this.resetPage();
+    this.getBreedPics();
   }
 
   /**
@@ -211,11 +309,11 @@ export default class Home extends Vue {
    */
   public onResize() {
     if (window.innerWidth <= 650) {
-      this.$store.commit("updateMobile", "xs");
+      this.updateMobile("xs");
     } else if (window.innerWidth <= 900) {
-      this.$store.commit("updateMobile", "md");
+      this.updateMobile("md");
     } else if (window.innerWidth <= 1920) {
-      this.$store.commit("updateMobile", "lg");
+      this.updateMobile("lg");
     }
   }
 

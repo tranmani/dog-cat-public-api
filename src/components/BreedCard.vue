@@ -1,9 +1,9 @@
 <template>
   <div class="card">
     <div class="img d-flex center" @click="seeDetail">
-      <img :src="dogPic" class="img-content" />
+      <img :src="pic" class="img-content" />
       <div class="card-title">
-        <div class="breed-title">{{ truncate(name, 20, "...") }}</div>
+        <div class="breed-title">{{ truncate(name, 23, "...") }}</div>
       </div>
     </div>
     <div class="d-flex row center h-pa-5" v-if="traits.length > 0">
@@ -14,27 +14,32 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import DogDetail from "@/components/DogDetail.vue";
+import BreedDetail from "@/components/BreedDetail.vue";
 import Chip from "@/components/Chip.vue";
 import "@/assets/style.scss";
+import { Mutation } from "vuex-class";
 
 @Component({
   components: {
-    DogDetail,
+    BreedDetail,
     Chip,
   },
 })
 export default class DogCard extends Vue {
+  @Mutation("addCurrentBreed") addCurrentBreed!: any;
+
   @Prop({ required: true, type: String }) name!: string;
   @Prop({ required: false, default: "" }) bredFor!: string;
-  @Prop({ required: true }) height!: string;
+  @Prop({ required: false }) height!: string;
   @Prop({ required: true }) weight!: string;
   @Prop({ required: true }) id!: number;
   @Prop({ required: true }) lifeSpan!: string;
   @Prop({ required: false }) traits!: Array<string>;
-  @Prop({ required: false, default: "" }) countryCode!: string;
-  @Prop({ required: true }) dogPic!: string;
+  @Prop({ required: true }) pic!: string;
   @Prop({ required: true }) bg!: string;
+  @Prop({ required: false }) description!: string;
+  @Prop({ required: false }) wiki!: string;
+  @Prop({ required: false }) origin!: string;
 
   /**
    * truncate Truncate dog's name if it is too long
@@ -51,7 +56,7 @@ export default class DogCard extends Vue {
    * seeDetail Go to detail page of the clicked dog
    */
   public seeDetail() {
-    this.$store.commit("addCurrentDog", {
+    this.addCurrentBreed({
       name: this.name,
       bredFor: this.bredFor,
       height: this.height,
@@ -59,8 +64,10 @@ export default class DogCard extends Vue {
       id: this.id,
       lifeSpan: this.lifeSpan,
       traits: this.traits,
-      countryCode: this.countryCode,
-      dogPic: this.dogPic,
+      origin: this.origin,
+      wiki: this.wiki,
+      description: this.description,
+      pic: this.pic,
       bg: this.bg,
     });
     document.documentElement.scrollTop = 0;
