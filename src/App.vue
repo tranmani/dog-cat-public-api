@@ -16,7 +16,7 @@
       </v-btn>
       <v-btn v-if="mobile != 'xs'" to="/random" text>
         <v-icon>mdi-shuffle</v-icon>
-        <span class="mr-2">Randomnizer</span>
+        <span>Randomnizer</span>
       </v-btn>
     </v-app-bar>
 
