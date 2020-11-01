@@ -79,7 +79,7 @@ export default Vue.extend({
     ...mapMutations(["updateIsDog", "updateToDog", "updateToCat"]),
     changeIsDog() {
       this.updateIsDog();
-      this.$router.push("/");
+      if (this.$route.name != "home") this.$router.push("/");
     },
   },
 });
