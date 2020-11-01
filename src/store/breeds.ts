@@ -5,9 +5,11 @@ import { utils } from "./utils";
 
 type BreedGetter = GetterTree<BreedState, any>;
 
+const randomBoolean = Math.random() >= 0.5;
+
 const state: BreedState = {
   breeds: [],
-  isDog: true,
+  isDog: randomBoolean,
   currentBreed: {
     name: "",
     bredFor: "",

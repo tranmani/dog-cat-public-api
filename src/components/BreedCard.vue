@@ -72,8 +72,11 @@ export default class DogCard extends Vue {
       pic: this.pic,
       bg: this.bg,
     });
+
+    // Scroll to top
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
+
     this.$emit("clickedDog");
   }
 }

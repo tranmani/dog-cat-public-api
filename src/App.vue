@@ -29,7 +29,10 @@
         <div>
           <v-row class="d-flex center">
             <v-col cols="2"><router-link to="/">Home</router-link></v-col>
-            <v-col cols="2"><router-link to="/random">Randomnizer</router-link></v-col>
+            <v-col cols="2">
+              <router-link to="/random" v-if="mobile != 'xs'">Randomnizer</router-link>
+              <router-link to="/random" v-if="mobile == 'xs'">Random</router-link>
+            </v-col>
           </v-row>
           <v-row class="d-flex center">
             <v-col cols="2"><a @click="changeToDog">Dog</a></v-col>
@@ -57,7 +60,7 @@
         </v-tab>
 
         <v-tab to="/random">
-          Randomnizer
+          Random
           <v-icon>mdi-shuffle</v-icon>
         </v-tab>
       </v-tabs>

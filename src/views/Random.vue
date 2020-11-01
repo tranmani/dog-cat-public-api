@@ -41,6 +41,10 @@ export default class Home extends Vue {
    * getRandomBreed Get random breed
    */
   public getRandomBreed() {
+    // Scroll to top
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
     this.loaded = false;
     const random = this.breeds[Math.floor(Math.random() * this.breeds.length)];
 
