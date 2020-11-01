@@ -45,7 +45,7 @@ export default class Home extends Vue {
   private displayBreeds: Array<Breed> = [];
 
   mounted() {
-    if (this.currentBreed.id == 0) this.$router.push("/");
+    if (this.breeds.length == 0) this.$router.push("/");
     this.getRelevantBreed();
   }
 

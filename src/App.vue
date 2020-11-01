@@ -21,7 +21,7 @@
     </v-app-bar>
 
     <transition name="fade">
-      <router-view :style="mobile == 'xs' ? 'margin: 48px 0 203px 0' : 'margin: 48px 0 131px 0'" />
+      <router-view :style="mobile == 'xs' ? 'margin: 48px 0 202px 0' : 'margin: 48px 0 130px 0'" />
     </transition>
 
     <v-footer absolute padless :class="mobile == 'xs' ? 'footer-mobile' : ''">

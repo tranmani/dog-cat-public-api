@@ -3,7 +3,7 @@
     <div class="img d-flex center" @click="seeDetail">
       <img :src="pic" class="img-content" />
       <div class="card-title">
-        <div class="breed-title">{{ truncate(name, 23, "...") }}</div>
+        <div class="breed-title">{{ truncate(name, 30, "...") }}</div>
       </div>
     </div>
     <transition name="fade">

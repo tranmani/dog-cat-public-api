@@ -33,7 +33,7 @@ export default class Home extends Vue {
   private loaded = true;
 
   mounted() {
-    if (this.currentBreed.id == 0) this.$router.push("/");
+    if (this.breeds.length == 0) this.$router.push("/");
     this.getRandomBreed();
   }
 
