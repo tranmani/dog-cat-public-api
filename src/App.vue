@@ -32,8 +32,8 @@
             <v-col cols="2"><router-link to="/random">Randomnizer</router-link></v-col>
           </v-row>
           <v-row class="d-flex center">
-            <v-col cols="2"><a @click="updateToDog">Dog</a></v-col>
-            <v-col cols="2"><a @click="updateToCat">Cat</a></v-col>
+            <v-col cols="2"><a @click="changeToDog">Dog</a></v-col>
+            <v-col cols="2"><a @click="changeToCat">Cat</a></v-col>
           </v-row>
         </div>
 
@@ -50,6 +50,10 @@
         <v-tab to="/">
           Home
           <v-icon>mdi-home</v-icon>
+        </v-tab>
+
+        <v-tab @click="changeIsDog" to="huy">
+          <v-icon>mdi-paw</v-icon>
         </v-tab>
 
         <v-tab to="/random">
@@ -80,6 +84,18 @@ export default Vue.extend({
     changeIsDog() {
       this.updateIsDog();
       if (this.$route.name != "home") this.$router.push("/");
+    },
+    changeToDog() {
+      if (!this.isDog) {
+        if (this.$route.name != "home") this.$router.push("/");
+      }
+      this.updateToDog();
+    },
+    changeToCat() {
+      if (this.isDog) {
+        if (this.$route.name != "home") this.$router.push("/");
+      }
+      this.updateToCat();
     },
   },
 });
