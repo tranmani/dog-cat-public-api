@@ -4,9 +4,11 @@
 
     <h2>Related</h2>
 
-    <v-row class="d-flex justify-center" v-if="loaded">
-      <BreedCard class="h-ma-5" v-for="breed in displayBreeds" :key="breed.id" v-bind="breed" v-on:clickedDog="getRelevantBreed" />
-    </v-row>
+    <transition name="fade">
+      <v-row class="d-flex justify-center" v-if="loaded">
+        <BreedCard class="h-ma-5" v-for="breed in displayBreeds" :key="breed.id" v-bind="breed" v-on:clickedDog="getRelevantBreed" />
+      </v-row>
+    </transition>
 
     <v-row class="d-flex justify-center" v-if="!loaded">
       <BreedCardSkeleton class="h-ma-5" v-for="breed in 3" :key="breed.id" />

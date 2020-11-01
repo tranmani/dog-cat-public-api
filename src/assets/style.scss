@@ -40,6 +40,18 @@
   background-image: linear-gradient(90deg, #74ebd5 0%, #9face6 100%);
 }
 
+.bg-grad-9 {
+  background-image: linear-gradient(-225deg, #b7f8db 0%, #50a7c2 100%);
+}
+
+.bg-grad-10 {
+  background-image: linear-gradient(-225deg, #7742b2 0%, #f180ff 52%, #fd8bd9 100%);
+}
+
+.bg-grad-11 {
+  background-image: linear-gradient(to top, #50cc7f 0%, #f5d100 100%);
+}
+
 .h-ma-8 {
   margin: 8px;
 }
@@ -68,7 +80,24 @@
   padding: 0;
 }
 
+.col-2 {
+  padding: 7px;
+}
+
 .row {
   margin: 0;
   padding: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+html {
+  scroll-behavior: smooth;
 }

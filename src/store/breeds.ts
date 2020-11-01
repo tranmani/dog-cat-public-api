@@ -74,6 +74,12 @@ const mutations: MutationTree<BreedState> = {
   updateIsDog(state): void {
     state.isDog = !state.isDog;
   },
+  updateToDog(state): void {
+    state.isDog = true;
+  },
+  updateToCat(state): void {
+    state.isDog = false;
+  },
 };
 
 export const breeds = {

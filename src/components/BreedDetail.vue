@@ -3,12 +3,16 @@
     <div class="card" :class="currentBreed.bg">
       <v-row>
         <v-col :cols="mobile == 'xs' ? 12 : 6" class="img-wraper">
-          <div class="img-container " v-if="loaded">
-            <img v-if="loaded" :src="currentBreed.pic" class="img-content" />
-          </div>
-          <div class="loader-container">
-            <v-progress-circular v-if="!loaded" :size="70" :width="7" class="loader" color="#BA68C8" indeterminate></v-progress-circular>
-          </div>
+          <transition name="fade">
+            <div class="img-container " v-if="loaded">
+              <img v-if="loaded" :src="currentBreed.pic" class="img-content" />
+            </div>
+          </transition>
+          <transition name="fade">
+            <div class="loader-container">
+              <v-progress-circular v-if="!loaded" :size="70" :width="7" class="loader" color="#BA68C8" indeterminate></v-progress-circular>
+            </div>
+          </transition>
         </v-col>
 
         <v-col :cols="mobile == 'xs' ? 12 : 6" class="breed-detail">
@@ -57,20 +61,22 @@
               >
             </v-col>
           </v-row>
+
           <v-col v-if="currentBreed.traits.length != 0">
             <v-row class="center">
               <h4>Traits</h4>
             </v-row>
 
             <v-row class="center">
-              <Chip
-                v-for="trait in currentBreed.traits"
-                :key="trait"
-                :name="trait"
-                :size="mobile == 'xs' ? 'chip-md' : 'chip-lg'"
-                class="h-ma-8"
-              /> </v-row
-          ></v-col>
+              <Chip v-for="trait in currentBreed.traits" :key="trait" :name="trait" :size="mobile == 'xs' ? 'chip-md' : 'chip-lg'" class="h-ma-8" />
+            </v-row>
+          </v-col>
+
+          <v-col v-if="currentBreed.wiki">
+            <v-row class="center">
+              <v-btn text :href="currentBreed.wiki" target="_blank">WIKIPEDIA</v-btn>
+            </v-row>
+          </v-col>
         </v-col>
       </v-row>
     </div>
@@ -95,32 +101,6 @@ export default class DogDetail extends Vue {
   @Getter("isDog") isDog!: string;
 
   @Prop({ required: false, type: Boolean }) loaded!: boolean;
-
-  /**
-   * bgGrad Return random background css
-   */
-  get bgGrad(): string {
-    const random = Math.floor(Math.random() * 8) + 1;
-    switch (random) {
-      case 1:
-        return "bg-grad-1";
-      case 2:
-        return "bg-grad-2";
-      case 3:
-        return "bg-grad-3";
-      case 4:
-        return "bg-grad-4";
-      case 5:
-        return "bg-grad-5";
-      case 6:
-        return "bg-grad-6";
-      case 7:
-        return "bg-grad-7";
-      case 8:
-        return "bg-grad-8";
-    }
-    return "bg-grad-1";
-  }
 }
 </script>
 

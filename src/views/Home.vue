@@ -29,12 +29,16 @@
         </v-col>
 
         <v-col cols="10">
-          <v-row class="d-flex justify-center" v-if="loaded">
-            <BreedCard class="h-ma-5" v-for="dog in displayBreeds" :key="dog.id" v-bind="dog" v-on:clickedDog="goToDetailPage" />
-          </v-row>
-          <v-row class="d-flex justify-center" v-if="!loaded">
-            <BreedCardSkeleton class="h-ma-5" v-for="dog in 10" :key="dog.id" />
-          </v-row>
+          <transition name="fade">
+            <v-row class="d-flex justify-center" v-if="loaded">
+              <BreedCard class="h-ma-5" v-for="dog in displayBreeds" :key="dog.id" v-bind="dog" v-on:clickedDog="goToDetailPage" />
+            </v-row>
+          </transition>
+          <transition name="fade">
+            <v-row class="d-flex justify-center" v-if="!loaded">
+              <BreedCardSkeleton class="h-ma-5" v-for="dog in 10" :key="dog.id" />
+            </v-row>
+          </transition>
         </v-col>
 
         <v-col cols="1">
@@ -47,7 +51,7 @@
               outlined
               class="btn-page btn-page-right"
               @click="getBreedPics('next')"
-              :disabled="currentPage == 160"
+              :disabled="isDog ? currentPage == 160 : currentPage == 50"
               ><v-icon>mdi-chevron-right</v-icon></v-btn
             >
           </div>
@@ -300,6 +304,12 @@ export default class Home extends Vue {
         return "bg-grad-7";
       case 8:
         return "bg-grad-8";
+      case 9:
+        return "bg-grad-9";
+      case 10:
+        return "bg-grad-10";
+      case 11:
+        return "bg-grad-11";
     }
     return "bg-grad-1";
   }

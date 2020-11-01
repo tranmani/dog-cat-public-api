@@ -6,9 +6,11 @@
         <div class="breed-title">{{ truncate(name, 23, "...") }}</div>
       </div>
     </div>
-    <div class="d-flex row center h-pa-5" v-if="traits.length > 0">
-      <Chip v-for="trait in traits.slice(0, 5)" :key="trait" :name="trait" class="h-ma-8" />
-    </div>
+    <transition name="fade">
+      <div class="d-flex row center h-pa-5" v-if="traits.length > 0">
+        <Chip v-for="trait in traits.slice(0, 5)" :key="trait" :name="trait" class="h-ma-8" />
+      </div>
+    </transition>
   </div>
 </template>
 
