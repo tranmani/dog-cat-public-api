@@ -1,4 +1,4 @@
-# dtt-test-public-api
+# dog-cat-public-api
 
 ## Project setup
 ```
